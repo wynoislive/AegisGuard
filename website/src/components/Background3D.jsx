@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Edges } from '@react-three/drei';
+import { Edges, useGLTF, Float } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Import the images directly to ensure Vite includes them in the build bundle correctly
@@ -8,6 +8,23 @@ import diamondOreImg from '../../public/blocks/diamond_ore.png';
 import redstoneOreImg from '../../public/blocks/redstone_ore.png';
 import bedrockImg from '../../public/blocks/bedrock.png';
 import ancientDebrisImg from '../../public/blocks/ancient_debris.png';
+
+function MobModel({ url, position, scale, rotation, glowColor }) {
+  // Gracefully handle the model loading. If the user hasn't downloaded it yet, we just return null.
+  try {
+    const { scene } = useGLTF(url);
+    return (
+      <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
+        <group position={position} scale={scale} rotation={rotation}>
+          <primitive object={scene} />
+          {glowColor && <pointLight color={glowColor} intensity={20} distance={10} />}
+        </group>
+      </Float>
+    );
+  } catch (e) {
+    return null; // Model file doesn't exist yet
+  }
+}
 
 function MinecraftBlock({ position, delay, texturePath, glowColor, scale = 1 }) {
   const meshRef = useRef();
@@ -102,6 +119,14 @@ export default function Background3D() {
             scale={b.scale} 
           />
         ))}
+
+        {/* 3D Sketchfab Models (Requires the .glb files in public/models/) */}
+        <React.Suspense fallback={null}>
+            <MobModel url="/AegisGuard/models/dragon.glb" position={[0, 5, -8]} scale={0.5} rotation={[0, -0.5, 0]} glowColor="#FF0000" />
+            <MobModel url="/AegisGuard/models/creeper.glb" position={[-8, -2, -5]} scale={1.5} rotation={[0, 0.8, 0]} glowColor="#00FF00" />
+            <MobModel url="/AegisGuard/models/warden.glb" position={[8, -1, -6]} scale={2} rotation={[0, -0.8, 0]} glowColor="#00FFFF" />
+            <MobModel url="/AegisGuard/models/warthoglin.glb" position={[-12, 1, -10]} scale={1.5} rotation={[0, 1.2, 0]} glowColor="#FF4400" />
+        </React.Suspense>
         
         <GridBackground />
       </Canvas>
