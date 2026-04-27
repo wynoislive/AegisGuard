@@ -122,8 +122,13 @@ export default function Background3D() {
 
         {/* 3D Sketchfab Models (User Downloaded) */}
         <React.Suspense fallback={null}>
-            <MobModel url="/AegisGuard/models/realistic_dragon_minecraft.glb" position={[-10, 0, -4]} scale={0.8} rotation={[0, 0.8, 0]} glowColor="#FF0000" />
-            <MobModel url="/AegisGuard/models/minecraft_rainbow_dragon.glb" position={[8, 3, -8]} scale={3} rotation={[0, -0.6, 0.2]} glowColor="#00FFFF" />
+            <MobModel url="/AegisGuard/models/realistic_dragon_minecraft.glb" position={[-12, 0, -5]} scale={0.8} rotation={[0, 0.8, 0]} glowColor="#FF0000" />
+            <MobModel url="/AegisGuard/models/minecraft_rainbow_dragon.glb" position={[12, 3, -10]} scale={3} rotation={[0, -0.6, 0.2]} glowColor="#00FFFF" />
+            
+            <MobModel url="/AegisGuard/models/minecraft_creeper.glb" position={[-8, -2, -3]} scale={1.2} rotation={[0, 0.5, 0]} glowColor="#00FF00" />
+            <MobModel url="/AegisGuard/models/minecraft_warden.glb" position={[8, -1, -5]} scale={1.8} rotation={[0, -0.7, 0]} glowColor="#00FFFF" />
+            <MobModel url="/AegisGuard/models/minecraft_-_phantom.glb" position={[0, 8, -6]} scale={2} rotation={[0.2, 0, 0]} glowColor="#5500FF" />
+            <MobModel url="/AegisGuard/models/minecraft_-_witch.glb" position={[-4, -1, -7]} scale={1.5} rotation={[0, 0.3, 0]} glowColor="#AA00FF" />
         </React.Suspense>
         
         <GridBackground />
