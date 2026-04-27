@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Edges, useGLTF, Float } from '@react-three/drei';
+import { Edges, useGLTF, Float, Center, Resize, useProgress, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Import the images directly to ensure Vite includes them in the build bundle correctly
@@ -9,17 +9,77 @@ import redstoneOreImg from '../../public/blocks/redstone_ore.png';
 import bedrockImg from '../../public/blocks/bedrock.png';
 import ancientDebrisImg from '../../public/blocks/ancient_debris.png';
 
-function MobModel({ url, position, scale, rotation, glowColor }) {
-  // useGLTF relies on Suspense. It throws a Promise while loading. 
-  // We must not catch it synchronously, otherwise React instantly abandons the render.
+function MobModel({ url, position, rotation, scaleMultiplier = 1 }) {
   const { scene } = useGLTF(url);
+  // We use <Resize> to aggressively squash the model into a standard maximum 10x10 cube, 
+  // and <Center> to align it perfectly to its local origin regardless of Blockbench offset.
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <group position={position} scale={scale} rotation={rotation}>
-        <primitive object={scene} />
-        {glowColor && <pointLight color={glowColor} intensity={20} distance={10} />}
+    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
+      <group position={position} rotation={rotation} scale={scaleMultiplier}>
+        <Resize scale={10}>
+          <Center>
+            <primitive object={scene} />
+          </Center>
+        </Resize>
       </group>
     </Float>
+  );
+}
+
+// -----------------------------------------------------
+// LOADING SCREEN ENGINE
+// -----------------------------------------------------
+function DragonLoadingOverlay() {
+  const { active, progress } = useProgress();
+  const dragonUrl = "/AegisGuard/models/minecraft_rainbow_dragon.glb";
+  const { scene } = useGLTF(dragonUrl);
+  const meshRef = useRef();
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.05; // Spin the dragon rapidly
+      // Levitate it smoothly
+      meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 3) * 2; 
+    }
+  });
+
+  // If loading is complete, unmount the overlay.
+  if (!active) return null;
+
+  return (
+    <Html center zIndexRange={[100, 100]}>
+      <div style={{
+        position: 'fixed', top: '-50vh', left: '-50vw', width: '100vw', height: '100vh',
+        background: 'rgba(0, 0, 0, 0.95)', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', color: '#00FFFF',
+        fontFamily: 'Orbitron, sans-serif', zIndex: 9999
+      }}>
+        {/* Render the actual spinning 3D Dragon via Canvas inside the HTML overlay! */}
+        <div style={{ width: '400px', height: '400px' }}>
+             <Canvas camera={{ position: [0, 0, 15], fov: 50 }}>
+                <ambientLight intensity={1} />
+                <pointLight position={[5, 5, 5]} intensity={10} color="#00FFFF" />
+                <group ref={meshRef}>
+                   <Resize scale={8}>
+                     <Center>
+                       <primitive object={scene} />
+                     </Center>
+                   </Resize>
+                </group>
+             </Canvas>
+        </div>
+        <h2 style={{ letterSpacing: '4px', marginTop: '20px', textTransform: 'uppercase' }}>
+          {progress < 10 ? 'ESTABLISHING SECURE LINK...' : `SYNCING ASSETS: ${Math.round(progress)}%`}
+        </h2>
+        <div style={{
+          width: '300px', height: '4px', background: '#333', marginTop: '15px', overflow: 'hidden'
+        }}>
+          <div style={{
+            width: `${progress}%`, height: '100%', background: '#00FFFF', transition: 'width 0.2s'
+          }}></div>
+        </div>
+      </div>
+    </Html>
   );
 }
 
@@ -101,10 +161,19 @@ export default function Background3D() {
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1 }}>
-      <Canvas camera={{ position: [0, 0, 8], fov: 60 }}>
-        {/* Ambient lighting is low to emphasize the glow/cyberpunk aesthetic */}
-        <ambientLight intensity={0.4} color="#aaccff" />
-        <pointLight position={[10, 20, 10]} intensity={10} color="#ffffff" />
+      {/* Set DPR bounds to 1.5 strictly to prevent Pixel Ratio scaling lag on 4K monitors */}
+      <Canvas camera={{ position: [0, 0, 8], fov: 60 }} dpr={[1, 1.5]}>
+        
+        {/* The loading Screen mounts first and monitors Suspense progress */}
+        <React.Suspense fallback={null}>
+            <DragonLoadingOverlay />
+        </React.Suspense>
+
+        {/* Global ambient lights replace individual model PointLights for insane performance gains */}
+        <ambientLight intensity={0.6} color="#aaccff" />
+        <pointLight position={[10, 20, 10]} intensity={15} color="#ffffff" />
+        <directionalLight position={[-10, 10, -5]} intensity={2} color="#00FFFF" />
+        <directionalLight position={[10, -10, 5]} intensity={2} color="#FF0000" />
         
         {blocks.map((b) => (
           <MinecraftBlock 
@@ -117,21 +186,19 @@ export default function Background3D() {
           />
         ))}
 
-        {/* 3D Sketchfab Models (User Downloaded) */}
-        <React.Suspense fallback={null}>
-            {/* The Dragons soar in the background */}
-            <MobModel url="/AegisGuard/models/realistic_dragon_minecraft.glb" position={[-6, 3, -6]} scale={0.4} rotation={[0, 0.8, 0]} glowColor="#FF0000" />
-            <MobModel url="/AegisGuard/models/minecraft_rainbow_dragon.glb" position={[6, 4, -8]} scale={0.6} rotation={[0, -0.6, 0.2]} glowColor="#00FFFF" />
-            
-            {/* Ground troops near the bottom peripheral edges */}
-            <MobModel url="/AegisGuard/models/minecraft_warden.glb" position={[7, -2, -6]} scale={0.15} rotation={[0, -0.7, 0]} glowColor="#00FFFF" />
-            <MobModel url="/AegisGuard/models/minecraft_creeper.glb" position={[-5, -3, -5]} scale={0.05} rotation={[0, 0.5, 0]} glowColor="#00FF00" />
-            <MobModel url="/AegisGuard/models/minecraft_villager_animatable.glb" position={[4, -2, -4]} scale={0.1} rotation={[0, -0.4, 0]} glowColor="#55FF55" />
-            <MobModel url="/AegisGuard/models/minecraft_-_witch.glb" position={[-8, -1, -8]} scale={0.15} rotation={[0, 0.4, 0]} glowColor="#AA00FF" />
-            
-            {/* Phantom lurking near the very top ceiling */}
-            <MobModel url="/AegisGuard/models/minecraft_-_phantom.glb" position={[0, 5, -10]} scale={0.3} rotation={[0.4, 0, 0]} glowColor="#5500FF" />
-        </React.Suspense>
+        {/* 
+            Separate individual Suspense boundaries for models so they stream in asynchronously 
+            without completely freezing the main Canvas thread! 
+        */}
+        <React.Suspense fallback={null}><MobModel url="/AegisGuard/models/realistic_dragon_minecraft.glb" position={[-18, 5, -18]} scaleMultiplier={1.8} rotation={[0, 0.8, 0]} /></React.Suspense>
+        <React.Suspense fallback={null}><MobModel url="/AegisGuard/models/minecraft_rainbow_dragon.glb" position={[18, 10, -22]} scaleMultiplier={2} rotation={[0, -0.6, 0.2]} /></React.Suspense>
+        
+        <React.Suspense fallback={null}><MobModel url="/AegisGuard/models/minecraft_warden.glb" position={[16, -6, -15]} scaleMultiplier={1.5} rotation={[0, -0.7, 0]} /></React.Suspense>
+        <React.Suspense fallback={null}><MobModel url="/AegisGuard/models/minecraft_creeper.glb" position={[-10, -7, -9]} scaleMultiplier={1} rotation={[0, 0.5, 0]} /></React.Suspense>
+        <React.Suspense fallback={null}><MobModel url="/AegisGuard/models/minecraft_villager_animatable.glb" position={[12, -7, -8]} scaleMultiplier={1.2} rotation={[0, -0.4, 0]} /></React.Suspense>
+        <React.Suspense fallback={null}><MobModel url="/AegisGuard/models/minecraft_-_witch.glb" position={[-18, -4, -14]} scaleMultiplier={1.3} rotation={[0, 0.4, 0]} /></React.Suspense>
+        
+        <React.Suspense fallback={null}><MobModel url="/AegisGuard/models/minecraft_-_phantom.glb" position={[0, 15, -18]} scaleMultiplier={1.8} rotation={[0.4, 0, 0]} /></React.Suspense>
         
         <GridBackground />
       </Canvas>
