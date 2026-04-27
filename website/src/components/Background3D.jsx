@@ -53,6 +53,38 @@ function GridBackground() {
 }
 
 export default function Background3D() {
+  // Generate 25 randomized Minecraft blocks scattered across the 3D void
+  const blocks = React.useMemo(() => {
+    const textures = [
+      { path: diamondOreImg, glow: "#00FFFF" },
+      { path: ancientDebrisImg, glow: "#FF4400" },
+      { path: bedrockImg, glow: "#000000" },
+      { path: redstoneOreImg, glow: "#FF0000" }
+    ];
+    
+    const calculatedBlocks = [];
+    for (let i = 0; i < 25; i++) {
+      // Random coordinates spreading completely across the background
+      const x = (Math.random() - 0.5) * 20;
+      const y = (Math.random() - 0.5) * 15;
+      const z = -1 * (Math.random() * 10 + 2); // Push them backward so they don't hit the CSS UI
+      
+      const delay = Math.random() * 5;
+      const scale = 0.5 + Math.random() * 0.8; 
+      const textureType = textures[Math.floor(Math.random() * textures.length)];
+
+      calculatedBlocks.push({
+        id: i,
+        position: [x, y, z],
+        delay,
+        scale,
+        texturePath: textureType.path,
+        glowColor: textureType.glow
+      });
+    }
+    return calculatedBlocks;
+  }, []);
+
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1 }}>
       <Canvas camera={{ position: [0, 0, 8], fov: 60 }}>
@@ -60,10 +92,16 @@ export default function Background3D() {
         <ambientLight intensity={0.4} color="#aaccff" />
         <pointLight position={[10, 20, 10]} intensity={10} color="#ffffff" />
         
-        <MinecraftBlock position={[-4, 1.5, -2]} delay={0} texturePath={diamondOreImg} glowColor="#00FFFF" scale={1.2} />
-        <MinecraftBlock position={[4, -1, -3]} delay={2} texturePath={ancientDebrisImg} glowColor="#FF4400" scale={1.1} />
-        <MinecraftBlock position={[-3, -2, -1]} delay={1} texturePath={bedrockImg} glowColor="#000000" scale={1} />
-        <MinecraftBlock position={[3.5, 2.5, -4]} delay={3} texturePath={redstoneOreImg} glowColor="#FF0000" scale={1.3} />
+        {blocks.map((b) => (
+          <MinecraftBlock 
+            key={b.id} 
+            position={b.position} 
+            delay={b.delay} 
+            texturePath={b.texturePath} 
+            glowColor={b.glowColor} 
+            scale={b.scale} 
+          />
+        ))}
         
         <GridBackground />
       </Canvas>
