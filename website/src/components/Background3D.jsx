@@ -63,11 +63,11 @@ export default function Background3D() {
     ];
     
     const calculatedBlocks = [];
-    for (let i = 0; i < 25; i++) {
-      // Random coordinates spreading completely across the background
-      const x = (Math.random() - 0.5) * 20;
-      const y = (Math.random() - 0.5) * 15;
-      const z = -1 * (Math.random() * 10 + 2); // Push them backward so they don't hit the CSS UI
+    for (let i = 0; i < 80; i++) {
+      // Widen the field immensely to cover the extremeties of ultra-wide monitors
+      const x = (Math.random() - 0.5) * 50;
+      const y = (Math.random() - 0.5) * 35;
+      const z = -1 * (Math.random() * 15 + 2); // Push them varying distances into the Z-axis
       
       const delay = Math.random() * 5;
       const scale = 0.5 + Math.random() * 0.8; 
