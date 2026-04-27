@@ -2,10 +2,12 @@ import Background3D from './components/Background3D';
 import Hero from './components/Hero';
 import HudPanels from './components/HudPanels';
 import AlertPopup from './components/AlertPopup';
+import LoadingScreen from './components/LoadingScreen';
 
 function App() {
   return (
     <div className="app-container">
+      <LoadingScreen />
       <Background3D />
       <Hero />
       <HudPanels />

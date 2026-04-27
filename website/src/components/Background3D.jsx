@@ -26,63 +26,6 @@ function MobModel({ url, position, rotation, scaleMultiplier = 1 }) {
   );
 }
 
-// -----------------------------------------------------
-// LOADING SCREEN ENGINE
-// -----------------------------------------------------
-function DragonLoadingOverlay() {
-  const { active, progress } = useProgress();
-  const dragonUrl = "/AegisGuard/models/minecraft_rainbow_dragon.glb";
-  const { scene } = useGLTF(dragonUrl);
-  const meshRef = useRef();
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.05; // Spin the dragon rapidly
-      // Levitate it smoothly
-      meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 3) * 2; 
-    }
-  });
-
-  // If loading is complete, unmount the overlay.
-  if (!active) return null;
-
-  return (
-    <Html center zIndexRange={[100, 100]}>
-      <div style={{
-        position: 'fixed', top: '-50vh', left: '-50vw', width: '100vw', height: '100vh',
-        background: 'rgba(0, 0, 0, 0.95)', display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center', color: '#00FFFF',
-        fontFamily: 'Orbitron, sans-serif', zIndex: 9999
-      }}>
-        {/* Render the actual spinning 3D Dragon via Canvas inside the HTML overlay! */}
-        <div style={{ width: '400px', height: '400px' }}>
-             <Canvas camera={{ position: [0, 0, 15], fov: 50 }}>
-                <ambientLight intensity={1} />
-                <pointLight position={[5, 5, 5]} intensity={10} color="#00FFFF" />
-                <group ref={meshRef}>
-                   <Resize scale={8}>
-                     <Center>
-                       <primitive object={scene} />
-                     </Center>
-                   </Resize>
-                </group>
-             </Canvas>
-        </div>
-        <h2 style={{ letterSpacing: '4px', marginTop: '20px', textTransform: 'uppercase' }}>
-          {progress < 10 ? 'ESTABLISHING SECURE LINK...' : `SYNCING ASSETS: ${Math.round(progress)}%`}
-        </h2>
-        <div style={{
-          width: '300px', height: '4px', background: '#333', marginTop: '15px', overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${progress}%`, height: '100%', background: '#00FFFF', transition: 'width 0.2s'
-          }}></div>
-        </div>
-      </div>
-    </Html>
-  );
-}
-
 function MinecraftBlock({ position, delay, texturePath, glowColor, scale = 1 }) {
   const meshRef = useRef();
   
@@ -164,11 +107,6 @@ export default function Background3D() {
       {/* Set DPR bounds to 1.5 strictly to prevent Pixel Ratio scaling lag on 4K monitors */}
       <Canvas camera={{ position: [0, 0, 8], fov: 60 }} dpr={[1, 1.5]}>
         
-        {/* The loading Screen mounts first and monitors Suspense progress */}
-        <React.Suspense fallback={null}>
-            <DragonLoadingOverlay />
-        </React.Suspense>
-
         {/* Global ambient lights replace individual model PointLights for insane performance gains */}
         <ambientLight intensity={0.6} color="#aaccff" />
         <pointLight position={[10, 20, 10]} intensity={15} color="#ffffff" />
