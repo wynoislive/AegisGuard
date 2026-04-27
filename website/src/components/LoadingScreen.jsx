@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useProgress, useGLTF, Center, Resize } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 
@@ -28,8 +28,21 @@ function SpinningDragon() {
 
 export default function LoadingScreen() {
   const { active, progress } = useProgress();
+  const [fadingOut, setFadingOut] = useState(false);
+  const [unmounted, setUnmounted] = useState(false);
 
-  if (!active) return null;
+  // When loading finishes (active becomes false), trigger the CSS fade out first,
+  // then totally unmount the component after 1 second for a silky smooth transition.
+  useEffect(() => {
+    if (!active && progress === 100) {
+      setFadingOut(true);
+      setTimeout(() => {
+        setUnmounted(true);
+      }, 1000);
+    }
+  }, [active, progress]);
+
+  if (unmounted) return null;
 
   return (
     <div style={{
@@ -37,12 +50,15 @@ export default function LoadingScreen() {
       background: 'radial-gradient(circle at center, #110000 0%, #000000 100%)', 
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center', color: '#00FFFF',
-      fontFamily: 'Orbitron, sans-serif', zIndex: 99999
+      fontFamily: 'Orbitron, sans-serif', zIndex: 99999,
+      opacity: fadingOut ? 0 : 1,
+      transition: 'opacity 1s ease-in-out',
+      pointerEvents: fadingOut ? 'none' : 'all'
     }}>
       <div style={{ width: '400px', height: '400px' }}>
         {/* We use a strict Suspense so if the loader dragon isn't ready it won't crash */}
         <React.Suspense fallback={null}>
-          <Canvas camera={{ position: [0, 0, 15], fov: 50 }}>
+          <Canvas camera={{ position: [0, 0, 15], fov: 50 }} dpr={1}>
             <ambientLight intensity={1} />
             <pointLight position={[5, 5, 5]} intensity={10} color="#00FFFF" />
             <SpinningDragon />
