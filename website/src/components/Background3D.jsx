@@ -129,6 +129,7 @@ export default function Background3D() {
             <MobModel url="/AegisGuard/models/minecraft_warden.glb" position={[8, -1, -5]} scale={1.8} rotation={[0, -0.7, 0]} glowColor="#00FFFF" />
             <MobModel url="/AegisGuard/models/minecraft_-_phantom.glb" position={[0, 8, -6]} scale={2} rotation={[0.2, 0, 0]} glowColor="#5500FF" />
             <MobModel url="/AegisGuard/models/minecraft_-_witch.glb" position={[-4, -1, -7]} scale={1.5} rotation={[0, 0.3, 0]} glowColor="#AA00FF" />
+            <MobModel url="/AegisGuard/models/minecraft_villager_animatable.glb" position={[4, -1.5, -4]} scale={1.6} rotation={[0, -0.4, 0]} glowColor="#55FF55" />
         </React.Suspense>
         
         <GridBackground />
