@@ -120,12 +120,10 @@ export default function Background3D() {
           />
         ))}
 
-        {/* 3D Sketchfab Models (Requires the .glb files in public/models/) */}
+        {/* 3D Sketchfab Models (User Downloaded) */}
         <React.Suspense fallback={null}>
-            <MobModel url="/AegisGuard/models/dragon.glb" position={[0, 5, -8]} scale={0.5} rotation={[0, -0.5, 0]} glowColor="#FF0000" />
-            <MobModel url="/AegisGuard/models/creeper.glb" position={[-8, -2, -5]} scale={1.5} rotation={[0, 0.8, 0]} glowColor="#00FF00" />
-            <MobModel url="/AegisGuard/models/warden.glb" position={[8, -1, -6]} scale={2} rotation={[0, -0.8, 0]} glowColor="#00FFFF" />
-            <MobModel url="/AegisGuard/models/warthoglin.glb" position={[-12, 1, -10]} scale={1.5} rotation={[0, 1.2, 0]} glowColor="#FF4400" />
+            <MobModel url="/AegisGuard/models/realistic_dragon_minecraft.glb" position={[-10, 0, -4]} scale={0.8} rotation={[0, 0.8, 0]} glowColor="#FF0000" />
+            <MobModel url="/AegisGuard/models/minecraft_rainbow_dragon.glb" position={[8, 3, -8]} scale={3} rotation={[0, -0.6, 0.2]} glowColor="#00FFFF" />
         </React.Suspense>
         
         <GridBackground />
