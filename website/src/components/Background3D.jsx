@@ -10,20 +10,17 @@ import bedrockImg from '../../public/blocks/bedrock.png';
 import ancientDebrisImg from '../../public/blocks/ancient_debris.png';
 
 function MobModel({ url, position, scale, rotation, glowColor }) {
-  // Gracefully handle the model loading. If the user hasn't downloaded it yet, we just return null.
-  try {
-    const { scene } = useGLTF(url);
-    return (
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-        <group position={position} scale={scale} rotation={rotation}>
-          <primitive object={scene} />
-          {glowColor && <pointLight color={glowColor} intensity={20} distance={10} />}
-        </group>
-      </Float>
-    );
-  } catch (e) {
-    return null; // Model file doesn't exist yet
-  }
+  // useGLTF relies on Suspense. It throws a Promise while loading. 
+  // We must not catch it synchronously, otherwise React instantly abandons the render.
+  const { scene } = useGLTF(url);
+  return (
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
+      <group position={position} scale={scale} rotation={rotation}>
+        <primitive object={scene} />
+        {glowColor && <pointLight color={glowColor} intensity={20} distance={10} />}
+      </group>
+    </Float>
+  );
 }
 
 function MinecraftBlock({ position, delay, texturePath, glowColor, scale = 1 }) {
