@@ -1,0 +1,97 @@
+# ============================================================
+# AegisGuard - Discord Webhook Configuration
+# Author: wyno
+# ============================================================
+
+discord:
+  enabled: true
+
+  # Webhook endpoints for different log types
+  # Leave URL empty to disable a specific webhook
+  webhooks:
+    alerts:
+      url: ""
+      enabled: true
+    punishments:
+      url: ""
+      enabled: true
+    ore:
+      url: ""
+      enabled: true
+    exploits:
+      url: ""
+      enabled: true
+    lifecycle:
+      url: ""
+      enabled: true
+    errors:
+      url: ""
+      enabled: true
+    staff:
+      url: ""
+      enabled: true
+
+  # Embed style settings
+  style:
+    footer-text: "AegisGuard | Paper 1.21.1"
+    footer-icon: ""
+    thumbnail-enabled: true
+    # Use player avatar as thumbnail
+    avatar-url: "https://crafthead.net/helm/{uuid}"
+
+    # Embed colors (decimal)
+    colors:
+      info: 3447003       # Blue
+      warn: 16776960      # Yellow
+      danger: 15158332    # Red
+      success: 3066993    # Green
+      critical: 10038562  # Dark Red
+
+  # Delivery settings
+  delivery:
+    # Worker threads for webhook dispatch
+    workers: 2
+
+    # Queue settings
+    queue-capacity: 1000
+
+    # Retry settings
+    max-retries: 3
+    retry-delay-ms: 1000
+    exponential-backoff: true
+
+    # Rate limiter (token bucket)
+    rate-limit:
+      tokens-per-second: 5
+      burst-capacity: 10
+
+  # Aggregation - combine similar alerts
+  aggregation:
+    enabled: true
+    # Time window for combining similar alerts (seconds)
+    window-seconds: 30
+    # Max alerts to aggregate before force-sending
+    max-aggregated: 15
+
+  # Daily summary webhook
+  daily-summary:
+    enabled: true
+    # Time to send summary (24h format, server timezone)
+    time: "00:00"
+    webhook: "lifecycle"
+
+  # Correlation alerts
+  correlation:
+    enabled: true
+    # Checks that together indicate high risk
+    high-risk-patterns:
+      - ["xray", "freecam", "basehunter"]
+      - ["killaura", "reach", "velocity"]
+      - ["speed", "fly", "phase"]
+
+  # Security
+  security:
+    # Mask webhook URLs in console logs
+    mask-urls: true
+    # Validate webhook URLs before use
+    validate-urls: true

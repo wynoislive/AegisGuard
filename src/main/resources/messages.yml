@@ -1,0 +1,64 @@
+# ============================================================
+# AegisGuard - Messages Configuration
+# Author: wyno
+# ============================================================
+
+# Supports Adventure MiniMessage format
+# Placeholders: {player}, {staff}, {check}, {vl}, {category}, {platform}, {world}, {xyz}, {ping}, {tps}, {trust}, {duration}, {reason}
+
+prefix: "<dark_gray>[<aqua><bold>AegisGuard</bold></aqua>]</dark_gray> "
+
+alerts:
+  format: "{prefix}<yellow>{player}</yellow> <gray>flagged</gray> <red>{check}</red> <gray>x{vl}</gray> <dark_gray>({category})</dark_gray>"
+  verbose: "{prefix}<gray>[DEBUG]</gray> <yellow>{player}</yellow> <white>{check}</white> <gray>{details}</gray>"
+  staff-join: "{prefix}<green>Welcome! You are receiving anticheat alerts.</green>"
+  high-risk: "{prefix}<dark_red><bold>HIGH RISK</bold></dark_red> <red>{player}</red> <gray>triggered multiple suspicious checks</gray>"
+
+commands:
+  no-permission: "{prefix}<red>You do not have permission to use this command.</red>"
+  player-not-found: "{prefix}<red>Player not found: {player}</red>"
+  player-not-online: "{prefix}<red>Player is not online: {player}</red>"
+  reload-success: "{prefix}<green>Configuration reloaded successfully.</green>"
+  reload-fail: "{prefix}<red>Failed to reload configuration. Check console for errors.</red>"
+  help-header: "{prefix}<aqua><bold>AegisGuard Commands</bold></aqua>"
+  debug-enabled: "{prefix}<green>Debug mode enabled.</green>"
+  debug-disabled: "{prefix}<yellow>Debug mode disabled.</yellow>"
+
+freeze:
+  frozen: "{prefix}<red><bold>You have been frozen by a staff member.</bold></red>\n<gray>Please do not disconnect. A staff member will review your gameplay.</gray>"
+  freeze-success: "{prefix}<green>Successfully froze <yellow>{player}</yellow>.</green>"
+  unfreeze-success: "{prefix}<green>Successfully unfroze <yellow>{player}</yellow>.</green>"
+  already-frozen: "{prefix}<yellow>{player} is already frozen.</yellow>"
+  not-frozen: "{prefix}<yellow>{player} is not frozen.</yellow>"
+  frozen-disconnect: "{prefix}<red>{player} disconnected while frozen!</red>"
+
+punishments:
+  kick-message: "<red><bold>AegisGuard</bold></red>\n<gray>You have been removed from the server.</gray>\n<white>Reason: {reason}</white>"
+  ban-message: "<red><bold>AegisGuard</bold></red>\n<gray>You have been banned from the server.</gray>\n<white>Reason: {reason}</white>\n<gray>Duration: {duration}</gray>"
+  punish-success: "{prefix}<green>Punished <yellow>{player}</yellow>: {reason}</green>"
+
+profile:
+  header: "{prefix}<aqua><bold>Player Profile: {player}</bold></aqua>"
+  platform: "<gray>Platform:</gray> <white>{platform}</white>"
+  trust: "<gray>Trust Score:</gray> <white>{trust}</white>"
+  ping: "<gray>Ping:</gray> <white>{ping}ms</white>"
+  playtime: "<gray>Playtime:</gray> <white>{playtime}</white>"
+  violations: "<gray>Total Violations:</gray> <white>{vl}</white>"
+  status: "<gray>Status:</gray> <white>{status}</white>"
+
+evidence:
+  recorded: "{prefix}<green>Evidence recorded for <yellow>{player}</yellow>. ID: <white>{evidence_id}</white></green>"
+  no-evidence: "{prefix}<yellow>No evidence found for {player}.</yellow>"
+
+webhook:
+  test-success: "{prefix}<green>Webhook test sent successfully.</green>"
+  test-fail: "{prefix}<red>Webhook test failed. Check console for errors.</red>"
+  status-header: "{prefix}<aqua><bold>Webhook Status</bold></aqua>"
+  queue-size: "<gray>Queue Size:</gray> <white>{size}</white>"
+  rate-limit: "<gray>Rate Limited:</gray> <white>{limited}</white>"
+  flush-success: "{prefix}<green>Webhook queue flushed.</green>"
+  reload-success: "{prefix}<green>Webhook configuration reloaded.</green>"
+
+gui:
+  main-title: "<dark_gray>AegisGuard Dashboard</dark_gray>"
+  player-title: "<dark_gray>Player: {player}</dark_gray>"

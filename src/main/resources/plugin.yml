@@ -1,0 +1,53 @@
+name: AegisGuard
+version: "${version}"
+main: com.aegisguard.bootstrap.AegisGuardPlugin
+api-version: "1.21"
+description: "${description}"
+author: wyno
+website: ""
+depend:
+  - ProtocolLib
+softdepend:
+  - floodgate
+
+permissions:
+  aegis.admin:
+    description: Full administrative access to AegisGuard
+    default: op
+  aegis.staff:
+    description: Staff-level access to AegisGuard
+    default: false
+  aegis.alerts:
+    description: Receive anticheat alerts
+    default: false
+  aegis.freeze:
+    description: Freeze/unfreeze players
+    default: false
+  aegis.gui:
+    description: Access AegisGuard GUI panels
+    default: false
+  aegis.reload:
+    description: Reload AegisGuard configuration
+    default: op
+  aegis.debug:
+    description: Access debug features
+    default: op
+  aegis.bypass:
+    description: Bypass all anticheat checks
+    default: false
+  aegis.exempt:
+    description: Exempt players from checks
+    default: false
+  aegis.webhook:
+    description: Manage webhook system
+    default: op
+
+commands:
+  ac:
+    description: AegisGuard main command
+    usage: /ac <subcommand>
+    permission: aegis.staff
+    aliases:
+      - aegis
+      - anticheat
+      - aegisguard

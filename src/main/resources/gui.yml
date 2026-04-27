@@ -1,0 +1,161 @@
+# ============================================================
+# AegisGuard - GUI Configuration
+# Author: wyno
+# ============================================================
+
+main-panel:
+  title: "&8AegisGuard Dashboard"
+  size: 54  # 6 rows
+
+  items:
+    suspicious-players:
+      slot: 10
+      material: PLAYER_HEAD
+      name: "&c&lSuspicious Players"
+      lore:
+        - "&7View players with high VL"
+        - "&7Click to browse"
+
+    server-risk:
+      slot: 12
+      material: REDSTONE_TORCH
+      name: "&e&lServer Risk Meter"
+      lore:
+        - "&7Current threat level"
+        - "&7Based on active flags"
+
+    latest-alerts:
+      slot: 14
+      material: BELL
+      name: "&6&lLatest Alerts"
+      lore:
+        - "&7View recent detections"
+        - "&7Click to browse"
+
+    active-freezes:
+      slot: 16
+      material: BLUE_ICE
+      name: "&b&lActive Freezes"
+      lore:
+        - "&7Currently frozen players"
+        - "&7Click to manage"
+
+    toggle-alerts:
+      slot: 28
+      material: COMPARATOR
+      name: "&a&lToggle Alerts"
+      lore:
+        - "&7Enable/disable your alerts"
+        - "&7Click to toggle"
+
+    settings:
+      slot: 30
+      material: ANVIL
+      name: "&7&lSettings"
+      lore:
+        - "&7Plugin configuration"
+        - "&7Click to manage"
+
+    statistics:
+      slot: 32
+      material: BOOK
+      name: "&d&lStatistics"
+      lore:
+        - "&7Server-wide statistics"
+        - "&7Click to view"
+
+    close:
+      slot: 49
+      material: BARRIER
+      name: "&c&lClose"
+      lore:
+        - "&7Close this menu"
+
+player-panel:
+  title: "&8Player: {player}"
+  size: 54
+
+  items:
+    player-info:
+      slot: 4
+      material: PLAYER_HEAD
+      name: "&e&l{player}"
+      lore:
+        - "&7Platform: &f{platform}"
+        - "&7Trust: &f{trust}"
+        - "&7Ping: &f{ping}ms"
+
+    violations:
+      slot: 19
+      material: PAPER
+      name: "&c&lViolations"
+      lore:
+        - "&7Movement: &f{movement_vl}"
+        - "&7Combat: &f{combat_vl}"
+        - "&7Ore: &f{ore_vl}"
+        - "&7Interact: &f{interaction_vl}"
+        - "&7Exploit: &f{exploit_vl}"
+        - "&7Economy: &f{economy_vl}"
+
+    trust-score:
+      slot: 21
+      material: EMERALD
+      name: "&a&lTrust Score"
+      lore:
+        - "&7Score: &f{trust}/100"
+        - "&7Level: &f{trust_level}"
+
+    evidence:
+      slot: 23
+      material: ENDER_EYE
+      name: "&d&lEvidence"
+      lore:
+        - "&7Records: &f{evidence_count}"
+        - "&7Click to view"
+
+    spectate:
+      slot: 25
+      material: ENDER_PEARL
+      name: "&b&lSpectate"
+      lore:
+        - "&7Teleport to player"
+        - "&7in spectator mode"
+
+    freeze-btn:
+      slot: 37
+      material: ICE
+      name: "&b&lFreeze Player"
+      lore:
+        - "&7Freeze for investigation"
+        - "&7Click to freeze/unfreeze"
+
+    kick-btn:
+      slot: 39
+      material: IRON_DOOR
+      name: "&e&lKick Player"
+      lore:
+        - "&7Kick from server"
+        - "&7Click to kick"
+
+    ban-btn:
+      slot: 41
+      material: BARRIER
+      name: "&c&lBan Player"
+      lore:
+        - "&7Ban from server"
+        - "&7Click to ban"
+
+    verbose-btn:
+      slot: 43
+      material: COMMAND_BLOCK
+      name: "&6&lVerbose Mode"
+      lore:
+        - "&7Toggle verbose output"
+        - "&7for this player"
+
+    back:
+      slot: 49
+      material: ARROW
+      name: "&7&lBack"
+      lore:
+        - "&7Return to main panel"

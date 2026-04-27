@@ -1,0 +1,374 @@
+# ============================================================
+# AegisGuard - Check Configuration
+# Author: wyno
+# ============================================================
+
+# Each check has:
+#   enabled: true/false
+#   threshold: VL required to trigger action
+#   cooldown: ms between flags
+#   decay-rate: VL decay per interval
+#   weight: multiplier for VL gain
+#   setback: whether to setback players
+#   punish: whether to auto-punish
+#   verbose: enable debug output for this check
+
+movement:
+  fly:
+    enabled: true
+    threshold: 20
+    cooldown: 500
+    decay-rate: 1.0
+    weight: 1.0
+    setback: true
+    punish: true
+    verbose: false
+
+  speed:
+    enabled: true
+    threshold: 25
+    cooldown: 500
+    decay-rate: 1.0
+    weight: 1.0
+    setback: true
+    punish: true
+    verbose: false
+
+  nofall:
+    enabled: true
+    threshold: 15
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 0.8
+    setback: true
+    punish: true
+    verbose: false
+
+  phase:
+    enabled: true
+    threshold: 10
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 1.2
+    setback: true
+    punish: true
+    verbose: false
+
+  jesus:
+    enabled: true
+    threshold: 15
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 1.0
+    setback: true
+    punish: true
+    verbose: false
+
+  step:
+    enabled: true
+    threshold: 15
+    cooldown: 500
+    decay-rate: 0.5
+    weight: 0.8
+    setback: true
+    punish: true
+    verbose: false
+
+  blink:
+    enabled: true
+    threshold: 10
+    cooldown: 2000
+    decay-rate: 0.5
+    weight: 1.5
+    setback: true
+    punish: true
+    verbose: false
+
+  inventory-walk:
+    enabled: true
+    threshold: 15
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 0.7
+    setback: false
+    punish: false
+    verbose: false
+
+combat:
+  reach:
+    enabled: true
+    threshold: 15
+    cooldown: 500
+    decay-rate: 1.0
+    weight: 1.2
+    setback: false
+    punish: true
+    verbose: false
+
+  killaura:
+    enabled: true
+    threshold: 20
+    cooldown: 500
+    decay-rate: 1.0
+    weight: 1.5
+    setback: false
+    punish: true
+    verbose: false
+
+  autoclicker:
+    enabled: true
+    threshold: 20
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 0.8
+    setback: false
+    punish: true
+    verbose: false
+
+  velocity:
+    enabled: true
+    threshold: 15
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 1.2
+    setback: false
+    punish: true
+    verbose: false
+
+  critical:
+    enabled: true
+    threshold: 15
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 1.0
+    setback: false
+    punish: true
+    verbose: false
+
+  aimassist:
+    enabled: true
+    threshold: 25
+    cooldown: 500
+    decay-rate: 1.0
+    weight: 0.8
+    setback: false
+    punish: true
+    verbose: false
+
+world:
+  scaffold:
+    enabled: true
+    threshold: 15
+    cooldown: 500
+    decay-rate: 1.0
+    weight: 1.0
+    setback: true
+    punish: true
+    verbose: false
+
+  nuker:
+    enabled: true
+    threshold: 10
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 1.5
+    setback: true
+    punish: true
+    verbose: false
+
+  automine:
+    enabled: true
+    threshold: 20
+    cooldown: 500
+    decay-rate: 0.5
+    weight: 0.8
+    setback: false
+    punish: true
+    verbose: false
+
+ore:
+  xray:
+    enabled: true
+    threshold: 30
+    cooldown: 5000
+    decay-rate: 0.2
+    weight: 2.0
+    setback: false
+    punish: true
+    verbose: false
+    # Custom ore generation rates for WynoWorldGen
+    # Set to -1 to use autodetect
+    custom-ore-rates:
+      diamond: -1
+      ancient_debris: -1
+      emerald: -1
+      gold: -1
+      iron: -1
+      lapis: -1
+      redstone: -1
+    # Rolling windows in minutes
+    windows:
+      short: 15
+      medium: 60
+      long: 1440
+      trend: 10080
+    # Bait ore system
+    bait:
+      enabled: true
+      cluster-size: 3
+      detection-radius: 8
+
+interaction:
+  cheststealer:
+    enabled: true
+    threshold: 15
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 1.0
+    setback: false
+    punish: true
+    verbose: false
+
+  autoarmor:
+    enabled: true
+    threshold: 15
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 0.8
+    setback: false
+    punish: true
+    verbose: false
+
+  autototem:
+    enabled: true
+    threshold: 10
+    cooldown: 2000
+    decay-rate: 0.3
+    weight: 1.2
+    setback: false
+    punish: true
+    verbose: false
+
+  autoeat:
+    enabled: true
+    threshold: 20
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 0.6
+    setback: false
+    punish: false
+    verbose: false
+
+exploit:
+  packet-flood:
+    enabled: true
+    threshold: 5
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 2.0
+    setback: false
+    punish: true
+    verbose: false
+
+  crash-exploit:
+    enabled: true
+    threshold: 3
+    cooldown: 5000
+    decay-rate: 0.1
+    weight: 5.0
+    setback: false
+    punish: true
+    verbose: false
+
+  book-exploit:
+    enabled: true
+    threshold: 5
+    cooldown: 2000
+    decay-rate: 0.5
+    weight: 2.0
+    setback: false
+    punish: true
+    verbose: false
+
+  sign-exploit:
+    enabled: true
+    threshold: 5
+    cooldown: 2000
+    decay-rate: 0.5
+    weight: 2.0
+    setback: false
+    punish: true
+    verbose: false
+
+  chat-flood:
+    enabled: true
+    threshold: 10
+    cooldown: 1000
+    decay-rate: 1.0
+    weight: 1.0
+    setback: false
+    punish: true
+    verbose: false
+
+packet:
+  invalid-packet:
+    enabled: true
+    threshold: 5
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 2.0
+    setback: false
+    punish: true
+    verbose: false
+
+  packet-order:
+    enabled: true
+    threshold: 10
+    cooldown: 1000
+    decay-rate: 0.5
+    weight: 1.5
+    setback: false
+    punish: true
+    verbose: false
+
+freecam:
+  freecam:
+    enabled: true
+    threshold: 15
+    cooldown: 2000
+    decay-rate: 0.5
+    weight: 1.5
+    setback: true
+    punish: true
+    verbose: false
+
+  basehunter:
+    enabled: true
+    threshold: 20
+    cooldown: 5000
+    decay-rate: 0.3
+    weight: 2.0
+    setback: false
+    punish: true
+    verbose: false
+
+  storage-esp:
+    enabled: true
+    threshold: 20
+    cooldown: 5000
+    decay-rate: 0.3
+    weight: 1.5
+    setback: false
+    punish: true
+    verbose: false
+
+economy:
+  economy-abuse:
+    enabled: true
+    threshold: 25
+    cooldown: 10000
+    decay-rate: 0.1
+    weight: 2.0
+    setback: false
+    punish: true
+    verbose: false

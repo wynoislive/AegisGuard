@@ -1,0 +1,33 @@
+# ============================================================
+# AegisGuard - Database Configuration
+# Author: wyno
+# ============================================================
+
+database:
+  # Type can be MYSQL or SQLITE.
+  # SQLITE is automatic and requires no configuration.
+  # MYSQL is recommended for high-performance enterprise setups.
+  type: "SQLITE"
+
+  # MySQL Connection Details (Only needed if type is MYSQL)
+  DB_HOST: "localhost"
+  DB_PORT: 3306
+  DB_USER: "root"
+  DB_PASSWORD: "your_password"
+  DB_NAME: "aegisguard_db"
+
+  # Connection Pool Settings (HikariCP)
+  pool:
+    maximum-pool-size: 10
+    minimum-idle: 2
+    idle-timeout: 300000
+    max-lifetime: 600000
+    connection-timeout: 30000
+    keepalive-time: 30000
+
+  # Batch operation settings
+  batch:
+    # Batch size for bulk inserts
+    size: 100
+    # Flush interval in seconds
+    flush-interval: 30

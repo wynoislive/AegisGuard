@@ -1,0 +1,105 @@
+# ============================================================
+# AegisGuard - Enterprise AntiCheat Configuration
+# Author: wyno
+# ============================================================
+
+general:
+  # Enable or disable the entire anticheat system
+  enabled: true
+
+  # Prefix used in all messages
+  prefix: "&8[&b&lAegisGuard&8] "
+
+  # Enable verbose debug output to console
+  debug: false
+
+  # Default language
+  language: "en"
+
+  # Max violations stored per player in memory
+  max-violations-memory: 500
+
+  # Violation decay interval in seconds
+  decay-interval: 30
+
+performance:
+  # Maximum async check threads
+  async-threads: 4
+
+  # Tick rate for scheduled tasks (in ticks, 20 = 1 second)
+  task-interval: 20
+
+  # Enable TPS compensation for checks
+  tps-compensation: true
+
+  # Low TPS threshold - checks become lenient below this
+  low-tps-threshold: 18.0
+
+  # Enable ping compensation for movement/combat checks
+  ping-compensation: true
+
+  # High ping threshold in ms - checks relax above this
+  high-ping-threshold: 200
+
+  # Maximum packet rate before throttling (packets per second)
+  max-packet-rate: 500
+
+platform:
+  # Enable Bedrock/Geyser player detection
+  bedrock-detection: true
+
+  # Multiplier for Bedrock player movement thresholds
+  bedrock-movement-multiplier: 1.5
+
+  # Multiplier for Bedrock player combat thresholds
+  bedrock-combat-multiplier: 1.4
+
+  # Extra latency margin for Bedrock players (ms)
+  bedrock-latency-margin: 100
+
+  # Disable precision checks for touch input
+  disable-touch-precision-checks: true
+
+trust:
+  # Base trust score for new players (0-100)
+  default-score: 50
+
+  # Trust gained per hour of clean play
+  gain-per-hour: 2.0
+
+  # Trust lost per violation (scaled by severity)
+  loss-per-violation: 5.0
+
+  # Minimum trust score
+  min-score: 0
+
+  # Maximum trust score
+  max-score: 100
+
+  # High trust threshold - slower escalation
+  high-trust-threshold: 75
+
+  # Low trust threshold - faster investigation
+  low-trust-threshold: 25
+
+logging:
+  # Enable file logging
+  file-logging: true
+
+  # Log directory relative to plugin folder
+  log-directory: "logs"
+
+  # Log alerts to file
+  log-alerts: true
+
+  # Log punishments to file
+  log-punishments: true
+
+  # Log errors to file
+  log-errors: true
+
+  # Log webhook events to file
+  log-webhooks: true
+
+  # Days to keep log files
+  log-retention-days: 30

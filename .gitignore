@@ -1,0 +1,18 @@
+# Gradle
+.gradle/
+build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Compiled Java Classes
+*.class
+
+# Bin
+bin/
+
+# Temporary files
+*.swp
+*.bak

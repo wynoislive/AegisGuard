@@ -1,0 +1,99 @@
+# ============================================================
+# AegisGuard - Punishment Configuration
+# Author: wyno
+# ============================================================
+
+# Escalation ladder stages
+# Each stage defines what action is taken at a given VL level
+# Actions: SILENT_LOG, STAFF_ALERT, CANCEL, SETBACK, FREEZE, TEMP_BAN, BAN_RECOMMEND
+
+# VL thresholds at which each stage activates
+# VL ranges are cumulative across all checks in a category
+
+escalation:
+  # Stage 1: Silent logging only
+  stage1:
+    action: SILENT_LOG
+    vl-range: "1-10"
+    message: "Logging suspicious activity"
+
+  # Stage 2: Alert staff
+  stage2:
+    action: STAFF_ALERT
+    vl-range: "11-25"
+    message: "Staff alerted for review"
+
+  # Stage 3: Cancel/setback the action
+  stage3:
+    action: SETBACK
+    vl-range: "26-50"
+    message: "Action cancelled and player set back"
+
+  # Stage 4: Temporary freeze for investigation
+  stage4:
+    action: FREEZE
+    vl-range: "51-80"
+    duration: 60
+    message: "Temporarily frozen for staff review"
+
+  # Stage 5: Temporary punishment
+  stage5:
+    action: TEMP_BAN
+    vl-range: "81-120"
+    duration: 3600
+    message: "Temporarily banned for suspicious activity"
+    kick-message: "Suspicious activity detected. Temp ban: {duration}"
+
+  # Stage 6: Manual review ban recommendation
+  stage6:
+    action: BAN_RECOMMEND
+    vl-range: "121+"
+    message: "Manual review ban recommended"
+
+# Category-specific overrides
+categories:
+  movement:
+    enabled: true
+    escalation-speed: 1.0
+
+  combat:
+    enabled: true
+    escalation-speed: 1.0
+
+  ore:
+    enabled: true
+    escalation-speed: 0.8
+
+  interaction:
+    enabled: true
+    escalation-speed: 0.7
+
+  exploit:
+    enabled: true
+    escalation-speed: 2.0
+
+  economy:
+    enabled: true
+    escalation-speed: 0.5
+
+  freecam:
+    enabled: true
+    escalation-speed: 1.2
+
+# Trust-based escalation modifiers
+trust-modifiers:
+  # Players with high trust escalate slower
+  high-trust:
+    threshold: 75
+    speed-multiplier: 0.5
+
+  # Players with low trust escalate faster
+  low-trust:
+    threshold: 25
+    speed-multiplier: 2.0
+
+# Never instant ban from a single flag
+safety:
+  min-flags-before-action: 3
+  min-time-before-ban: 300
+  require-staff-confirmation-for-ban: true
