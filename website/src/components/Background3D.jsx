@@ -47,15 +47,10 @@ function MinecraftBlock({ position, delay, texturePath, glowColor, scale = 1 }) 
     <group position={position} ref={meshRef} scale={[scale, scale, scale]}>
       <mesh>
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial map={texture} roughness={0.8} />
-        {/* Glow edge surrounding the block to match Cyberpunk vibe */}
-        <Edges scale={1.02} threshold={15} color={glowColor} />
+        <meshBasicMaterial map={texture} />
+        {/* Glow edge surrounding the block mapped cleanly without crushing GPU lights */}
+        <Edges scale={1.02} color={glowColor} />
       </mesh>
-      
-      {/* Small PointLight attached to the block if it glows */}
-      {glowColor !== "#000000" && (
-        <pointLight color={glowColor} distance={3} intensity={5} />
-      )}
     </group>
   );
 }
@@ -80,7 +75,8 @@ export default function Background3D() {
     ];
     
     const calculatedBlocks = [];
-    for (let i = 0; i < 80; i++) {
+    // Hard limit the block count to 40 instead of 80 to save massive polygon drawing latency
+    for (let i = 0; i < 40; i++) {
       // Widen the field immensely to cover the extremeties of ultra-wide monitors
       const x = (Math.random() - 0.5) * 50;
       const y = (Math.random() - 0.5) * 35;
