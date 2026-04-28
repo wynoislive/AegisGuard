@@ -54,8 +54,8 @@ The configuration is broken down into structured systems, located in `plugins/Ae
 
 ## 🚀 Building from source
 
-We use `Gradle` to compile and shade our dependencies. Java 21 must be utilized.
+We use `Gradle` to compile and shade our dependencies. Java 21 or higher (JDK 23 recommended for this environment) must be utilized.
 ```bash
 ./gradlew clean shadowJar
 ```
-This produces an artifact mapping to `build/libs/AegisGuard-1.0.0.jar`. Drop it directly into your `plugins` directory. Note that AegisGuard gracefully identifies the presence of `ProtocolLib` and `Floodgate` at runtime, hooking into them automatically if they are populated.
+This produces an artifact mapping to `build/libs/AegisGuard-1.0.3.jar`. Drop it directly into your `plugins` directory. Note that AegisGuard gracefully identifies the presence of `ProtocolLib` and `Floodgate` at runtime, hooking into them automatically if they are populated.
