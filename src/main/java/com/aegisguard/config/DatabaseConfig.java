@@ -87,7 +87,7 @@ public final class DatabaseConfig {
      * Build a JDBC URL for MySQL.
      */
     public String getMySQLUrl() {
-        return String.format("jdbc:mysql://%s:%d/%s?useSSL=false&autoReconnect=true&characterEncoding=utf8mb4",
+        return String.format("jdbc:mysql://%s:%d/%s?useSSL=false&autoReconnect=true&characterEncoding=UTF-8",
                 getHost(), getPort(), getDatabaseName());
     }
 }

@@ -61,16 +61,56 @@ public final class MySQLStorage implements StorageManager {
         try (InputStream is = plugin.getResource("schema/mysql.sql")) {
             if (is == null) throw new RuntimeException("MySQL schema file not found!");
             String schema = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            try (Connection conn = dataSource.getConnection();
-                 Statement stmt = conn.createStatement()) {
-                for (String sql : schema.split(";")) {
-                    sql = sql.trim();
-                    if (!sql.isEmpty() && !sql.startsWith("--")) {
-                        stmt.execute(sql);
+            
+            try (Connection conn = dataSource.getConnection()) {
+                conn.setAutoCommit(false); // Start transaction
+                try (Statement stmt = conn.createStatement()) {
+                    // Temporarily disable foreign keys for schema initialization
+                    stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
+                    
+                    String[] statements = schema.split(";");
+                    for (String sql : statements) {
+                        String cleanedSql = cleanSql(sql);
+                        if (!cleanedSql.isEmpty()) {
+                            try {
+                                stmt.execute(cleanedSql);
+                            } catch (SQLException e) {
+                                logger.severe("Failed to execute MySQL SQL: " + cleanedSql);
+                                throw e;
+                            }
+                        }
                     }
+                    
+                    // Re-enable foreign keys
+                    stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+                    conn.commit();
+                } catch (Exception e) {
+                    conn.rollback();
+                    throw e;
                 }
             }
         }
+    }
+
+    /**
+     * Cleans a single SQL statement by removing comments and trimming whitespace.
+     */
+    private String cleanSql(String sql) {
+        StringBuilder sb = new StringBuilder();
+        for (String line : sql.split("\n")) {
+            String trimmedLine = line.trim();
+            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("--")) {
+                // Handle inline comments
+                int commentIdx = trimmedLine.indexOf("--");
+                if (commentIdx != -1) {
+                    trimmedLine = trimmedLine.substring(0, commentIdx).trim();
+                }
+                if (!trimmedLine.isEmpty()) {
+                    sb.append(trimmedLine).append(" ");
+                }
+            }
+        }
+        return sb.toString().trim();
     }
 
     @Override
