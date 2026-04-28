@@ -12,7 +12,7 @@ export default function Hero() {
         className="title-container"
       >
         <h1 className="main-title glitch-text" data-text="AEGISGUARD">
-          AEGIS<span style={{ color: 'var(--primary-red)' }}>GUARD</span> <span style={{ fontSize: '2rem', verticalAlign: 'top', color: 'var(--secondary-cyan)' }}>v1.0.1</span>
+          AEGIS<span style={{ color: 'var(--primary-red)' }}>GUARD</span> <span style={{ fontSize: '2rem', verticalAlign: 'top', color: 'var(--secondary-cyan)' }}>v1.0.2</span>
         </h1>
         <h2 className="subtitle">
           ENTERPRISE ANTI-CHEAT <span style={{ color: 'var(--primary-red)' }}>•</span> MINECRAFT PAPER 1.21.1

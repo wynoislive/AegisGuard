@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.aegisguard"
-version = "1.0.1"
+version = "1.0.2"
 description = "Enterprise-grade AntiCheat for Paper 1.21.1"
 
 java {
@@ -38,8 +38,6 @@ tasks {
 
         relocate("com.zaxxer.hikari", "com.aegisguard.libs.hikari")
         relocate("com.github.benmanes.caffeine", "com.aegisguard.libs.caffeine")
-        relocate("org.sqlite", "com.aegisguard.libs.sqlite")
-        relocate("com.mysql", "com.aegisguard.libs.mysql")
 
         minimize {
             exclude(dependency("org.xerial:sqlite-jdbc:.*"))
