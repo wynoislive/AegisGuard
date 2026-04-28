@@ -2,6 +2,7 @@ package com.aegisguard.core;
 
 import com.aegisguard.alerts.AlertManager;
 import com.aegisguard.alerts.discord.DiscordWebhookService;
+import com.aegisguard.antixray.AntiXrayManager;
 import com.aegisguard.checks.CheckManager;
 import com.aegisguard.commands.CommandHandler;
 import com.aegisguard.compat.CompatManager;

@@ -109,7 +109,7 @@ public final class AntiXrayManager implements Listener {
         World world = player.getWorld();
 
         if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
-            BlockPosition pos = packet.getBlockPositions().read(0);
+            BlockPosition pos = packet.getBlockPositionModifier().read(0);
             WrappedBlockData data = packet.getBlockData().read(0);
             
             if (shouldObfuscate(world, pos, data.getType())) {
