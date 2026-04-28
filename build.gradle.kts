@@ -4,12 +4,12 @@ plugins {
 }
 
 group = "com.aegisguard"
-version = "1.0.0"
+version = "1.0.1"
 description = "Enterprise-grade AntiCheat for Paper 1.21.1"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(23))
     }
 }
 
