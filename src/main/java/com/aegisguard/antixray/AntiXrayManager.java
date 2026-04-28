@@ -34,24 +34,26 @@ public final class AntiXrayManager implements Listener {
 
     private final Plugin plugin;
     private final Logger logger;
-    private final boolean enabled;
-    private final int engineMode; // 1 = Hide only, 2 = Replace with random fillers (Obfuscation)
+    private final com.aegisguard.world.WorldManager worldManager;
+    private final boolean globalEnabled;
+    private final int globalMode; 
     
     private final Set<Material> targetBlocks = EnumSet.noneOf(Material.class);
     private final Set<Material> transparentBlocks = EnumSet.noneOf(Material.class);
     private final Set<Material> fillerBlocks = EnumSet.noneOf(Material.class);
 
-    public AntiXrayManager(Plugin plugin, boolean enabled, int engineMode) {
+    public AntiXrayManager(Plugin plugin, com.aegisguard.world.WorldManager worldManager, boolean enabled, int mode) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
-        this.enabled = enabled;
-        this.engineMode = engineMode;
+        this.worldManager = worldManager;
+        this.globalEnabled = enabled;
+        this.globalMode = mode;
 
         if (enabled) {
             setupMaterials();
             registerPacketListeners();
             Bukkit.getPluginManager().registerEvents(this, plugin);
-            logger.info("Anti-Xray Prevention Engine enabled (Mode: " + engineMode + ")");
+            logger.info("Anti-Xray Prevention Engine initialized.");
         }
     }
 
@@ -94,7 +96,8 @@ public final class AntiXrayManager implements Listener {
                 PacketType.Play.Server.MAP_CHUNK) {
             @Override
             public void onPacketSending(PacketEvent event) {
-                if (!enabled) return;
+                if (!globalEnabled) return;
+                if (!worldManager.getSettings(event.getPlayer().getWorld()).isAntiXrayEnabled()) return;
                 processChunkPacket(event);
             }
         });
@@ -103,7 +106,8 @@ public final class AntiXrayManager implements Listener {
                 PacketType.Play.Server.BLOCK_CHANGE, PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
             @Override
             public void onPacketSending(PacketEvent event) {
-                if (!enabled) return;
+                if (!globalEnabled) return;
+                if (!worldManager.getSettings(event.getPlayer().getWorld()).isAntiXrayEnabled()) return;
                 handleBlockChange(event);
             }
         });
@@ -157,7 +161,8 @@ public final class AntiXrayManager implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!enabled) return;
+        if (!globalEnabled) return;
+        if (!worldManager.getSettings(event.getBlock().getWorld()).isAntiXrayEnabled()) return;
         
         Block block = event.getBlock();
         int radius = 2;

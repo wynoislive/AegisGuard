@@ -1,0 +1,18 @@
+# AegisGuard Multi-World Configuration
+# Define per-world settings here. Worlds not listed will use default global settings.
+
+worlds:
+  world:
+    enabled: true
+    anti-xray:
+      enabled: true
+      mode: 2
+  world_nether:
+    enabled: true
+    anti-xray:
+      enabled: true
+      mode: 2
+  world_the_end:
+    enabled: true
+    anti-xray:
+      enabled: false # Xray is usually not a concern in the end

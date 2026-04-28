@@ -13,6 +13,7 @@ import com.aegisguard.metrics.MetricsManager;
 import com.aegisguard.playerdata.PlayerProfileManager;
 import com.aegisguard.scheduler.TaskScheduler;
 import com.aegisguard.storage.DatabaseManager;
+import com.aegisguard.world.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -42,6 +43,7 @@ public final class AegisGuard {
     private GuiManager guiManager;
     private CompatManager compatManager;
     private MetricsManager metricsManager;
+    private WorldManager worldManager;
 
     private volatile boolean enabled = false;
     private long startTime;
@@ -90,6 +92,10 @@ public final class AegisGuard {
             configManager = new ConfigManager(plugin);
             configManager.loadAll();
             registry.register(ConfigManager.class, configManager);
+
+            worldManager = new WorldManager(plugin);
+            worldManager.load();
+            registry.register(WorldManager.class, worldManager);
 
             if (!configManager.isEnabled()) {
                 logger.warning("AegisGuard is disabled in config.yml!");
@@ -157,6 +163,7 @@ public final class AegisGuard {
             logger.info("[11/11] Starting prevention engines...");
             AntiXrayManager antiXrayManager = new AntiXrayManager(
                     plugin, 
+                    worldManager,
                     configManager.isAntiXrayEnabled(), 
                     configManager.getAntiXrayMode()
             );
@@ -262,6 +269,7 @@ public final class AegisGuard {
     public GuiManager getGuiManager() { return guiManager; }
     public CompatManager getCompatManager() { return compatManager; }
     public MetricsManager getMetricsManager() { return metricsManager; }
+    public WorldManager getWorldManager() { return worldManager; }
     public boolean isEnabled() { return enabled; }
     public long getStartTime() { return startTime; }
 }
