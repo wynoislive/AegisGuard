@@ -12,8 +12,8 @@ public final class InventoryWalkCheck extends Check {
     public CheckResult check(Player player, PlayerProfile profile) {
         MovementData data = profile.getMovementData();
         var openInv = player.getOpenInventory();
-        if (openInv.getType() == InventoryType.CRAFTING) return CheckResult.pass(); // player inventory is always open
-        // Player has another inventory open and is moving
+        // Player has an inventory open and is moving aggressively
+        // We allow the UI to stay open, but flag if they start sprinting or moving fast
         if (data.getLastHorizontalSpeed() > 0.15 && data.isSprinting()) {
             return CheckResult.fail(ViolationLevel.MINOR, 0.5,
                     "invWalk: speed=" + String.format("%.3f", data.getLastHorizontalSpeed())

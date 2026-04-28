@@ -57,7 +57,8 @@ public final class CompatManager {
             protocolLibHook.initialize();
             logger.info("ProtocolLib integration enabled.");
         } else {
-            logger.warning("ProtocolLib not found! Some checks may be limited.");
+            logger.warning("ProtocolLib not found! Packet-level monitoring and advanced combat checks will be disabled.");
+            logger.warning("For full functionality, please install ProtocolLib: https://modrinth.com/plugin/protocollib");
         }
     }
 

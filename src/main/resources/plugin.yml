@@ -5,9 +5,8 @@ api-version: "1.21"
 description: "${description}"
 author: wyno
 website: ""
-depend:
-  - ProtocolLib
 softdepend:
+  - ProtocolLib
   - floodgate
 
 permissions:

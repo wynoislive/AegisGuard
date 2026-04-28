@@ -57,6 +57,13 @@ public final class XrayCheck extends Check {
                     "baitOre: triggered=" + data.getBaitOreTriggered());
         }
 
+        // Statistical anomaly scoring (OreTracker)
+        double anomalyScore = OreTracker.computeAnomalyScore(data);
+        if (anomalyScore > 50) {
+            return CheckResult.fail(ViolationLevel.MEDIUM, Math.min(1.0, anomalyScore / 100.0),
+                    "anomaly: score=" + String.format("%.1f", anomalyScore));
+        }
+
         return CheckResult.pass();
     }
 }
