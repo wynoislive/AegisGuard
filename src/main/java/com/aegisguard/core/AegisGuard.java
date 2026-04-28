@@ -85,7 +85,7 @@ public final class AegisGuard {
 
         try {
             // Phase 1: Configuration
-            logger.info("[1/10] Loading configuration...");
+            logger.info("[1/11] Loading configuration...");
             configManager = new ConfigManager(plugin);
             configManager.loadAll();
             registry.register(ConfigManager.class, configManager);
@@ -96,34 +96,34 @@ public final class AegisGuard {
             }
 
             // Phase 2: Scheduler
-            logger.info("[2/10] Initializing scheduler...");
+            logger.info("[2/11] Initializing scheduler...");
             scheduler = new TaskScheduler(plugin, configManager.getAsyncThreads());
             registry.register(TaskScheduler.class, scheduler);
 
             // Phase 3: Database
-            logger.info("[3/10] Connecting to database...");
+            logger.info("[3/11] Connecting to database...");
             databaseManager = new DatabaseManager(plugin, configManager.getDatabaseConfig());
             databaseManager.initialize();
             registry.register(DatabaseManager.class, databaseManager);
 
             // Phase 4: Compatibility
-            logger.info("[4/10] Loading compatibility modules...");
+            logger.info("[4/11] Loading compatibility modules...");
             compatManager = new CompatManager(plugin, configManager);
             compatManager.initialize();
             registry.register(CompatManager.class, compatManager);
 
             // Phase 5: Player Data
-            logger.info("[5/10] Initializing player profile engine...");
+            logger.info("[5/11] Initializing player profile engine...");
             profileManager = new PlayerProfileManager(plugin, databaseManager, configManager, compatManager);
             registry.register(PlayerProfileManager.class, profileManager);
 
             // Phase 6: Evidence
-            logger.info("[6/10] Initializing evidence system...");
+            logger.info("[6/11] Initializing evidence system...");
             evidenceManager = new EvidenceManager(databaseManager, scheduler);
             registry.register(EvidenceManager.class, evidenceManager);
 
             // Phase 7: Alerts & Webhooks
-            logger.info("[7/10] Initializing alert and webhook systems...");
+            logger.info("[7/11] Initializing alert and webhook systems...");
             webhookService = new DiscordWebhookService(configManager.getDiscordConfig(), scheduler, plugin.getLogger());
             webhookService.initialize();
             registry.register(DiscordWebhookService.class, webhookService);
@@ -132,18 +132,18 @@ public final class AegisGuard {
             registry.register(AlertManager.class, alertManager);
 
             // Phase 8: Checks
-            logger.info("[8/10] Registering check systems...");
+            logger.info("[8/11] Registering check systems...");
             checkManager = new CheckManager(plugin, configManager, profileManager, alertManager, compatManager);
             checkManager.registerAll();
             registry.register(CheckManager.class, checkManager);
 
             // Phase 9: GUI
-            logger.info("[9/10] Initializing GUI system...");
+            logger.info("[9/11] Initializing GUI system...");
             guiManager = new GuiManager(plugin, configManager, profileManager);
             registry.register(GuiManager.class, guiManager);
 
             // Phase 10: Commands & Metrics
-            logger.info("[10/10] Registering commands and metrics...");
+            logger.info("[10/11] Registering commands and metrics...");
             commandHandler = new CommandHandler(plugin, this);
             commandHandler.register();
             registry.register(CommandHandler.class, commandHandler);
@@ -151,6 +151,15 @@ public final class AegisGuard {
             metricsManager = new MetricsManager(plugin, this);
             metricsManager.start();
             registry.register(MetricsManager.class, metricsManager);
+
+            // Phase 11: Prevention Engines
+            logger.info("[11/11] Starting prevention engines...");
+            AntiXrayManager antiXrayManager = new AntiXrayManager(
+                    plugin, 
+                    configManager.isAntiXrayEnabled(), 
+                    configManager.getAntiXrayMode()
+            );
+            registry.register(AntiXrayManager.class, antiXrayManager);
 
             // Start scheduled tasks
             startScheduledTasks();

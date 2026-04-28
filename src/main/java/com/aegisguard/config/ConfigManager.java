@@ -181,6 +181,14 @@ public final class ConfigManager {
         return getMainConfig().getInt("general.decay-interval", 30);
     }
 
+    public boolean isAntiXrayEnabled() {
+        return getMainConfig().getBoolean("prevention.antixray.enabled", true);
+    }
+
+    public int getAntiXrayMode() {
+        return getMainConfig().getInt("prevention.antixray.mode", 2);
+    }
+
     public ChecksConfig getChecksConfig() { return checksConfig; }
     public MessagesConfig getMessagesConfig() { return messagesConfig; }
     public PunishmentsConfig getPunishmentsConfig() { return punishmentsConfig; }

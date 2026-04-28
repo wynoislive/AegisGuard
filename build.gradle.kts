@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.aegisguard"
-version = "1.0.4"
+version = "1.0.5"
 description = "Enterprise-grade AntiCheat for Paper 1.21.1"
 
 java {

@@ -60,6 +60,18 @@ platform:
   # Disable precision checks for touch input
   disable-touch-precision-checks: true
 
+prevention:
+  # Advanced prevention engines
+  antixray:
+    # Enable packet-level block obfuscation
+    enabled: true
+    # Engine Mode: 
+    # 1: Hide hidden ores (Replace with air/transparent)
+    # 2: Obfuscate (Replace with random stone/dirt/deepslate) - Most secure
+    mode: 2
+    # Radius around broken blocks to reveal ores (in blocks)
+    reveal-radius: 2
+
 trust:
   # Base trust score for new players (0-100)
   default-score: 50

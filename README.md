@@ -58,4 +58,4 @@ We use `Gradle` to compile and shade our dependencies. Java 21 or higher (JDK 23
 ```bash
 ./gradlew clean shadowJar
 ```
-This produces an artifact mapping to `build/libs/AegisGuard-1.0.4.jar`. Drop it directly into your `plugins` directory. Note that AegisGuard gracefully identifies the presence of `ProtocolLib` and `Floodgate` at runtime, hooking into them automatically if they are populated.
+This produces an artifact mapping to `build/libs/AegisGuard-1.0.5.jar`. Drop it directly into your `plugins` directory. Note that AegisGuard gracefully identifies the presence of `ProtocolLib` and `Floodgate` at runtime, hooking into them automatically if they are populated.
