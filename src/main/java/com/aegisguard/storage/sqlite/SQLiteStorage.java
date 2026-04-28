@@ -68,16 +68,58 @@ public final class SQLiteStorage implements StorageManager {
                 throw new IOException("SQLite schema file not found in resources!");
             }
             String schema = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            try (Connection conn = dataSource.getConnection();
-                 Statement stmt = conn.createStatement()) {
-                for (String sql : schema.split(";")) {
-                    sql = sql.trim();
-                    if (!sql.isEmpty() && !sql.startsWith("--")) {
-                        stmt.execute(sql);
+            
+            try (Connection conn = dataSource.getConnection()) {
+                conn.setAutoCommit(false); // Start transaction
+                try (Statement stmt = conn.createStatement()) {
+                    // Temporarily disable foreign keys to allow table creation in any order
+                    stmt.execute("PRAGMA foreign_keys = OFF;");
+                    
+                    // Split and execute statements
+                    String[] statements = schema.split(";");
+                    for (String sql : statements) {
+                        String cleanedSql = cleanSql(sql);
+                        if (!cleanedSql.isEmpty()) {
+                            try {
+                                stmt.execute(cleanedSql);
+                            } catch (SQLException e) {
+                                // Log the specific statement that failed for easier debugging
+                                logger.severe("Failed to execute SQL: " + cleanedSql);
+                                throw e;
+                            }
+                        }
                     }
+                    
+                    // Re-enable foreign keys
+                    stmt.execute("PRAGMA foreign_keys = ON;");
+                    conn.commit();
+                } catch (Exception e) {
+                    conn.rollback();
+                    throw e;
                 }
             }
         }
+    }
+
+    /**
+     * Cleans a single SQL statement by removing comments and trimming whitespace.
+     */
+    private String cleanSql(String sql) {
+        StringBuilder sb = new StringBuilder();
+        for (String line : sql.split("\n")) {
+            String trimmedLine = line.trim();
+            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("--")) {
+                // Handle inline comments
+                int commentIdx = trimmedLine.indexOf("--");
+                if (commentIdx != -1) {
+                    trimmedLine = trimmedLine.substring(0, commentIdx).trim();
+                }
+                if (!trimmedLine.isEmpty()) {
+                    sb.append(trimmedLine).append(" ");
+                }
+            }
+        }
+        return sb.toString().trim();
     }
 
     @Override
