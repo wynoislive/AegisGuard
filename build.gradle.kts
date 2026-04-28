@@ -8,8 +8,9 @@ version = "1.0.0"
 description = "Enterprise-grade AntiCheat for Paper 1.21.1"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 repositories {
