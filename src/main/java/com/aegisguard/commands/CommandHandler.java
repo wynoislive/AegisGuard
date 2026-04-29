@@ -31,8 +31,9 @@ public final class CommandHandler implements CommandExecutor, TabCompleter {
     private static final List<String> SUBCOMMANDS = Arrays.asList(
             "help", "gui", "alerts", "logs", "profile", "info", "trust",
             "freeze", "unfreeze", "exempt", "punish", "verbose", "debug", "reload",
-            "webhook", "evidence"
+            "webhook", "evidence", "orehider"
     );
+    private static final List<String> OREHIDER_SUBS = Arrays.asList("sync", "reload", "gui");
     private static final List<String> WEBHOOK_SUBS = Arrays.asList("test", "status", "flush", "reload");
 
     public CommandHandler(Plugin plugin, AegisGuard core) {
@@ -43,19 +44,34 @@ public final class CommandHandler implements CommandExecutor, TabCompleter {
     public void register() {
         var cmd = plugin.getServer().getPluginCommand("ac");
         if (cmd != null) {
-            cmd.setExecutor(this);
             cmd.setTabCompleter(this);
+        }
+        var oreCmd = plugin.getServer().getPluginCommand("orehider");
+        if (oreCmd != null) {
+            oreCmd.setExecutor(this);
+            oreCmd.setTabCompleter(this);
         }
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
+            if (command.getName().equalsIgnoreCase("orehider")) {
+                handleOreHider(sender, new String[]{"orehider", "gui"});
+                return true;
+            }
             sendHelp(sender);
             return true;
         }
 
         String sub = args[0].toLowerCase();
+        if (command.getName().equalsIgnoreCase("orehider")) {
+            // Reconstruct args to match /ac orehider <sub>
+            String[] newArgs = new String[args.length + 1];
+            newArgs[0] = "orehider";
+            System.arraycopy(args, 0, newArgs, 1, args.length);
+            return handleOreHider(sender, newArgs);
+        }
         return switch (sub) {
             case "help" -> { sendHelp(sender); yield true; }
             case "gui" -> handleGui(sender);
@@ -71,6 +87,7 @@ public final class CommandHandler implements CommandExecutor, TabCompleter {
             case "debug" -> handleDebug(sender);
             case "reload" -> handleReload(sender);
             case "webhook" -> handleWebhook(sender, args);
+            case "orehider" -> handleOreHider(sender, args);
             default -> { sendHelp(sender); yield true; }
         };
     }
@@ -90,6 +107,7 @@ public final class CommandHandler implements CommandExecutor, TabCompleter {
         sender.sendMessage(ColorUtil.parse("<yellow>/ac evidence <player></yellow> <gray>- View evidence</gray>"));
         sender.sendMessage(ColorUtil.parse("<yellow>/ac logs <player></yellow> <gray>- View violations</gray>"));
         sender.sendMessage(ColorUtil.parse("<yellow>/ac webhook <sub></yellow> <gray>- Webhook commands</gray>"));
+        sender.sendMessage(ColorUtil.parse("<yellow>/ac orehider <sub></yellow> <gray>- OreHider commands</gray>"));
         sender.sendMessage(ColorUtil.parse("<yellow>/ac debug</yellow> <gray>- Toggle debug mode</gray>"));
         sender.sendMessage(ColorUtil.parse("<yellow>/ac reload</yellow> <gray>- Reload config</gray>"));
     }
@@ -272,8 +290,56 @@ public final class CommandHandler implements CommandExecutor, TabCompleter {
         };
     }
 
+    private boolean handleOreHider(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("aegis.admin")) { sender.sendMessage(ColorUtil.error("No permission.")); return true; }
+        if (args.length < 2) {
+            sender.sendMessage(ColorUtil.parse("<yellow>OreHider commands: sync, reload, gui</yellow>"));
+            return true;
+        }
+        return switch (args[1].toLowerCase()) {
+            case "sync" -> {
+                sender.sendMessage(ColorUtil.parse("<yellow>Syncing configurations with Paper...</yellow>"));
+                boolean changed = core.getPaperSyncService().syncAll();
+                if (changed) {
+                    sender.sendMessage(ColorUtil.success("Paper configurations updated. Restart required."));
+                } else {
+                    sender.sendMessage(ColorUtil.info("All configurations already in sync."));
+                }
+                yield true;
+            }
+            case "reload" -> {
+                core.getConfigManager().reloadAll();
+                sender.sendMessage(ColorUtil.success("OreHider settings reloaded."));
+                
+                if (core.getConfigManager().getChecksConfig().getConfig().getBoolean("ore-hider.discord.enabled", true)) {
+                    String format = core.getConfigManager().getChecksConfig().getConfig().getString("ore-hider.discord.messages.update", 
+                            "🔄 **OreHider** configuration reloaded by {player}.");
+                    core.getWebhookService().sendDirect(format.replace("{player}", sender.getName()));
+                }
+                yield true;
+            }
+            case "gui" -> {
+                if (sender instanceof Player player) {
+                    // Logic to open OreHider GUI (will implement in GuiManager)
+                    core.getGuiManager().openOreHiderPanel(player);
+                } else {
+                    sender.sendMessage(ColorUtil.error("Only players can open the GUI."));
+                }
+                yield true;
+            }
+            default -> { sender.sendMessage(ColorUtil.error("Unknown OreHider subcommand.")); yield true; }
+        };
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (command.getName().equalsIgnoreCase("orehider")) {
+            if (args.length == 1) {
+                return OREHIDER_SUBS.stream().filter(s -> s.startsWith(args[0].toLowerCase())).collect(Collectors.toList());
+            }
+            return new ArrayList<>();
+        }
+
         if (args.length == 1) {
             return SUBCOMMANDS.stream().filter(s -> s.startsWith(args[0].toLowerCase())).collect(Collectors.toList());
         }
@@ -281,6 +347,9 @@ public final class CommandHandler implements CommandExecutor, TabCompleter {
             String sub = args[0].toLowerCase();
             if (sub.equals("webhook")) {
                 return WEBHOOK_SUBS.stream().filter(s -> s.startsWith(args[1].toLowerCase())).collect(Collectors.toList());
+            }
+            if (sub.equals("orehider")) {
+                return OREHIDER_SUBS.stream().filter(s -> s.startsWith(args[1].toLowerCase())).collect(Collectors.toList());
             }
             // Return online player names for commands that need a player argument
             if (List.of("profile", "info", "trust", "freeze", "unfreeze", "exempt", "punish", "verbose", "logs", "evidence").contains(sub)) {

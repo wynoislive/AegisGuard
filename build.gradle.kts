@@ -18,12 +18,24 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.opencollab.dev/main/")
+    maven("https://maven.enginehub.org/repo/")
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("com.google.guava:guava:32.1.2-jre")
+        force("com.google.code.gson:gson:2.10.1")
+        force("it.unimi.dsi:fastutil:8.5.6")
+        force("org.apache.logging.log4j:log4j-bom:2.24.1")
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0")
 
     implementation("com.zaxxer:HikariCP:6.2.1")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")

@@ -1,5 +1,6 @@
 package com.aegisguard.gui;
 
+import com.aegisguard.core.AegisGuard;
 import com.aegisguard.config.ConfigManager;
 import com.aegisguard.config.GuiConfig;
 import com.aegisguard.playerdata.PlayerProfile;
@@ -126,6 +127,31 @@ public final class GuiManager implements Listener {
         playerPanelTarget.put(staff.getUniqueId(), target.getUsername());
     }
 
+    /**
+     * Open the OreHider control panel.
+     */
+    public void openOreHiderPanel(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 27, ColorUtil.parseLegacy("&6&lOreHider Control Panel"));
+
+        // Mode Switcher
+        int currentMode = config.getChecksConfig().getConfig().getInt("ore-hider.global.engine-mode", 2);
+        inv.setItem(11, createItem(Material.REDSTONE_TORCH, "&eEngine Mode: &f" + currentMode, 
+                "&7Click to switch between Mode 1 (Hide) and 2 (Obfuscate)"));
+
+        // Reload
+        inv.setItem(13, createItem(Material.EMERALD_BLOCK, "&aForce Sync & Reload", 
+                "&7Apply changes to Paper config"));
+
+        // Status
+        boolean enabled = config.getChecksConfig().getConfig().getBoolean("ore-hider.global.enabled", true);
+        inv.setItem(15, createItem(Material.ENDER_EYE, "&dStatus: " + (enabled ? "&aENABLED" : "&cDISABLED"), 
+                "&7Click to toggle OreHider state"));
+
+        player.openInventory(inv);
+        openGuis.add(player.getUniqueId());
+        guiType.put(player.getUniqueId(), "orehider");
+    }
+
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
@@ -141,6 +167,8 @@ public final class GuiManager implements Listener {
             handleMainClick(player, event.getSlot(), clicked);
         } else if ("player".equals(type)) {
             handlePlayerClick(player, event.getSlot(), clicked);
+        } else if ("orehider".equals(type)) {
+            handleOreHiderClick(player, event.getSlot(), clicked);
         }
     }
 
@@ -176,6 +204,25 @@ public final class GuiManager implements Listener {
                     openPlayerPanel(player, target); // Refresh
                 }
             }
+        }
+    }
+
+    private void handleOreHiderClick(Player player, int slot, ItemStack item) {
+        if (slot == 11) {
+            int current = config.getChecksConfig().getConfig().getInt("ore-hider.global.engine-mode", 2);
+            int next = (current == 1) ? 2 : 1;
+            config.getChecksConfig().getConfig().set("ore-hider.global.engine-mode", next);
+            player.sendMessage(ColorUtil.success("Set Engine Mode to " + next));
+            openOreHiderPanel(player); // Refresh
+        } else if (slot == 13) {
+            player.sendMessage(ColorUtil.parse("<yellow>Syncing...</yellow>"));
+            AegisGuard.get().getPaperSyncService().syncAll();
+            player.sendMessage(ColorUtil.success("Configs synced! Restart required."));
+            player.closeInventory();
+        } else if (slot == 15) {
+            boolean current = config.getChecksConfig().getConfig().getBoolean("ore-hider.global.enabled", true);
+            config.getChecksConfig().getConfig().set("ore-hider.global.enabled", !current);
+            openOreHiderPanel(player);
         }
     }
 

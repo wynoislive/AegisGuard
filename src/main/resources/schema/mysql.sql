@@ -131,3 +131,11 @@ CREATE TABLE IF NOT EXISTS ag_webhook_events (
     sent_at BIGINT,
     INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ag_mining_stats (
+    player_id BIGINT PRIMARY KEY,
+    stone_mined INT DEFAULT 0,
+    ores_mined INT DEFAULT 0,
+    alerts_triggered INT DEFAULT 0,
+    FOREIGN KEY (player_id) REFERENCES ag_players(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

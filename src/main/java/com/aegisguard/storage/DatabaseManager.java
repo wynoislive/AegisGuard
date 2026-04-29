@@ -112,5 +112,17 @@ public final class DatabaseManager {
         return storage != null ? storage.getPunishmentCount(playerUuid) : 0;
     }
 
+    public void updateMiningStats(UUID uuid, boolean isOre) {
+        if (storage != null) storage.updateMiningStats(uuid, isOre);
+    }
+
+    public double getMiningRatio(UUID uuid) {
+        return storage != null ? storage.getMiningRatio(uuid) : 0.0;
+    }
+
+    public void incrementMiningAlerts(UUID uuid) {
+        if (storage != null) storage.incrementMiningAlerts(uuid);
+    }
+
     public StorageManager getStorage() { return storage; }
 }

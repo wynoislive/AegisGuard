@@ -131,6 +131,42 @@ public final class AlertManager {
         });
     }
 
+    public void handleAlert(Player player, String checkName, String category, double vl, String details) {
+        // Determination of alert level
+        AlertLevel level = vl >= 3.0 ? AlertLevel.HIGH : vl >= 2.0 ? AlertLevel.MEDIUM : AlertLevel.LOW;
+
+        // Build alert message
+        Component alertComponent = Component.text()
+                .append(ColorUtil.parse(config.getMessagesConfig().getPrefix()))
+                .append(Component.text(player.getName(), NamedTextColor.YELLOW))
+                .append(Component.text(" flagged ", NamedTextColor.GRAY))
+                .append(Component.text(checkName, NamedTextColor.RED))
+                .append(Component.text(" x" + String.format("%.1f", vl), NamedTextColor.GRAY))
+                .append(Component.text(" (" + category + ")", NamedTextColor.DARK_GRAY))
+                .hoverEvent(HoverEvent.showText(
+                        Component.text("Details: " + details, NamedTextColor.GRAY)
+                ))
+                .build();
+
+        // Send to staff
+        for (Player staff : Bukkit.getOnlinePlayers()) {
+            if (staff.hasPermission("aegis.alerts")) staff.sendMessage(alertComponent);
+        }
+
+        // Send to Discord
+        if (config.getChecksConfig().getConfig().getBoolean("ore-hider.discord.enabled", true)) {
+            String format = config.getChecksConfig().getConfig().getString("ore-hider.discord.messages.alert", 
+                    "🚨 **X-RAY DETECTED**: {player} mined **{amount}**x {ore} in the last {time}s!");
+            
+            String msg = format.replace("{player}", player.getName())
+                               .replace("{amount}", String.valueOf((int)(vl * 5))) // Rough approximation
+                               .replace("{ore}", "Ores")
+                               .replace("{time}", String.valueOf(config.getChecksConfig().getConfig().getInt("ore-hider.heuristics.time-window", 60)));
+            
+            webhookService.sendDirect(msg);
+        }
+    }
+
     /**
      * Log a punishment to file and webhook.
      */

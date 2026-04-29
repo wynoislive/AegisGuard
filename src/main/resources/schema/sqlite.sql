@@ -120,6 +120,14 @@ CREATE TABLE IF NOT EXISTS ag_webhook_events (
     sent_at INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS ag_mining_stats (
+    player_id INTEGER PRIMARY KEY,
+    stone_mined INTEGER DEFAULT 0,
+    ores_mined INTEGER DEFAULT 0,
+    alerts_triggered INTEGER DEFAULT 0,
+    FOREIGN KEY (player_id) REFERENCES ag_players(id) ON DELETE CASCADE
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_violations_player ON ag_violations(player_id);
 CREATE INDEX IF NOT EXISTS idx_violations_timestamp ON ag_violations(timestamp);
@@ -132,3 +140,4 @@ CREATE INDEX IF NOT EXISTS idx_evidence_player ON ag_evidence(player_id);
 CREATE INDEX IF NOT EXISTS idx_evidence_id ON ag_evidence(evidence_id);
 CREATE INDEX IF NOT EXISTS idx_webhook_status ON ag_webhook_events(status);
 CREATE INDEX IF NOT EXISTS idx_players_uuid ON ag_players(uuid);
+CREATE INDEX IF NOT EXISTS idx_mining_stats_player ON ag_mining_stats(player_id);

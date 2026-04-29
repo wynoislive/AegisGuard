@@ -14,6 +14,9 @@ import com.aegisguard.playerdata.PlayerProfileManager;
 import com.aegisguard.scheduler.TaskScheduler;
 import com.aegisguard.storage.DatabaseManager;
 import com.aegisguard.world.WorldManager;
+import com.aegisguard.antixray.PaperSyncService;
+import com.aegisguard.checks.ore.OreAnalysisListener;
+import com.aegisguard.checks.ore.OreThresholdCheck;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -44,6 +47,7 @@ public final class AegisGuard {
     private CompatManager compatManager;
     private MetricsManager metricsManager;
     private WorldManager worldManager;
+    private PaperSyncService paperSyncService;
 
     private volatile boolean enabled = false;
     private long startTime;
@@ -169,6 +173,22 @@ public final class AegisGuard {
             );
             registry.register(AntiXrayManager.class, antiXrayManager);
 
+            // Phase 12: OreHider Integration
+            logger.info("[12/12] Initializing OreHider integration...");
+            paperSyncService = new PaperSyncService(plugin, configManager);
+            paperSyncService.syncAll();
+            registry.register(PaperSyncService.class, paperSyncService);
+
+            Bukkit.getPluginManager().registerEvents(new OreAnalysisListener(plugin), plugin);
+            Bukkit.getPluginManager().registerEvents(new OreThresholdCheck(plugin), plugin);
+
+            // Discord Startup Message (OreHider parity)
+            if (configManager.getChecksConfig().getConfig().getBoolean("ore-hider.discord.enabled", true)) {
+                String startupMsg = configManager.getChecksConfig().getConfig().getString("ore-hider.discord.messages.startup", 
+                        "🟢 **OreHider** is now active. Anti-Xray protocols engaged.");
+                webhookService.sendDirect(startupMsg);
+            }
+
             // Start scheduled tasks
             startScheduledTasks();
 
@@ -205,7 +225,14 @@ public final class AegisGuard {
         logger.info("Shutting down AegisGuard...");
 
         if (webhookService != null) {
+            // Discord Shutdown Message (OreHider parity)
+            if (configManager != null && configManager.getChecksConfig().getConfig().getBoolean("ore-hider.discord.enabled", true)) {
+                String shutdownMsg = configManager.getChecksConfig().getConfig().getString("ore-hider.discord.messages.shutdown", 
+                        "🔴 **OreHider** has been disabled.");
+                webhookService.sendDirect(shutdownMsg);
+            }
             webhookService.sendLifecycleShutdown();
+            webhookService.shutdown();
         }
 
         if (metricsManager != null) metricsManager.stop();
@@ -270,6 +297,7 @@ public final class AegisGuard {
     public CompatManager getCompatManager() { return compatManager; }
     public MetricsManager getMetricsManager() { return metricsManager; }
     public WorldManager getWorldManager() { return worldManager; }
+    public PaperSyncService getPaperSyncService() { return paperSyncService; }
     public boolean isEnabled() { return enabled; }
     public long getStartTime() { return startTime; }
 }

@@ -40,6 +40,9 @@ permissions:
   aegis.webhook:
     description: Manage webhook system
     default: op
+  orehider.admin:
+    description: Allows full control of OreHider settings
+    default: op
 
 commands:
   ac:
@@ -50,3 +53,10 @@ commands:
       - aegis
       - anticheat
       - aegisguard
+  orehider:
+    description: Manage OreHider configurations
+    usage: /orehider [reload|sync|gui]
+    permission: orehider.admin
+    aliases:
+      - oh
+      - hide

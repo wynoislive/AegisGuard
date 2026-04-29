@@ -78,4 +78,18 @@ public interface StorageManager {
      * Get punishment count for a player.
      */
     int getPunishmentCount(UUID playerUuid);
+    /**
+     * Update mining statistics for a player.
+     */
+    void updateMiningStats(UUID uuid, boolean isOre);
+
+    /**
+     * Get mining ratio (ores / (ores + stones) * 100) for a player.
+     */
+    double getMiningRatio(UUID uuid);
+
+    /**
+     * Increment alert count for a player.
+     */
+    void incrementMiningAlerts(UUID uuid);
 }

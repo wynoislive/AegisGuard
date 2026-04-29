@@ -163,6 +163,28 @@ public final class DiscordWebhookService {
         queue.enqueue(new WebhookQueue.WebhookMessage(url, buildPayload(embed), "errors", 0));
     }
 
+    /**
+     * Send a raw content message directly to the alerts channel.
+     */
+    public void sendDirect(String content) {
+        if (!config.isEnabled() || !config.isWebhookEnabled("alerts")) return;
+        String url = config.getWebhookUrl("alerts");
+        if (url == null || url.isEmpty() || content == null || content.isEmpty()) return;
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("content", content);
+        String json = gson.toJson(payload);
+
+        // Send immediately if possible, or queue
+        if (running) {
+            queue.enqueue(new WebhookQueue.WebhookMessage(url, json, "alerts", 0));
+        } else {
+            try {
+                dispatcher.send(url, json);
+            } catch (Exception ignored) {}
+        }
+    }
+
     private String buildPayload(EmbedBuilder embed) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("embeds", List.of(embed.build()));

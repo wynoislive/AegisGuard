@@ -336,4 +336,57 @@ public final class SQLiteStorage implements StorageManager {
         }
         return 0;
     }
+
+    @Override
+    public void updateMiningStats(UUID uuid, boolean isOre) {
+        String sql = """
+            INSERT INTO ag_mining_stats (player_id, stone_mined, ores_mined)
+            SELECT id, ?, ? FROM ag_players WHERE uuid = ?
+            ON CONFLICT(player_id) DO UPDATE SET
+                stone_mined = stone_mined + excluded.stone_mined,
+                ores_mined = ores_mined + excluded.ores_mined
+            """;
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            int stone = isOre ? 0 : 1;
+            int ore = isOre ? 1 : 0;
+            ps.setInt(1, stone);
+            ps.setInt(2, ore);
+            ps.setString(3, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.severe("Failed to update mining stats: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public double getMiningRatio(UUID uuid) {
+        String sql = "SELECT stone_mined, ores_mined FROM ag_mining_stats ms JOIN ag_players p ON ms.player_id = p.id WHERE p.uuid = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int stone = rs.getInt("stone_mined");
+                int ores = rs.getInt("ores_mined");
+                if (stone + ores == 0) return 0.0;
+                return (double) ores / (stone + ores) * 100.0;
+            }
+        } catch (SQLException e) {
+            logger.severe("Failed to get mining ratio: " + e.getMessage());
+        }
+        return 0.0;
+    }
+
+    @Override
+    public void incrementMiningAlerts(UUID uuid) {
+        String sql = "UPDATE ag_mining_stats SET alerts_triggered = alerts_triggered + 1 WHERE player_id = (SELECT id FROM ag_players WHERE uuid = ?)";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.severe("Failed to increment mining alerts: " + e.getMessage());
+        }
+    }
 }

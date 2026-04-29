@@ -15,14 +15,15 @@ An enterprise-grade, high-performance AntiCheat plugin for Minecraft Paper 1.21.
 - **Deep Ore Tracking (Bait & Vein Analyze):** Built specifically for custom WorldGen (e.g., WynoWorldGen). Tracks direct-path deviations, vein flood-fills, and places invisible bait ores for automated honeypots. 
 - **Physics-based Movement Simulation:** Models vanilla movement algorithms — calculating friction scalars, liquid viscosity offsets, attribute modifiers, potion effects, and jump physics to precisely discern human limits from hacked clients.
 - **Discord Webhook Alert System:** Provides rate-limited, asynchronous payload dispatch for suspicious behavior, staff punishments, errors, and system lifecycles.
+- **Integrated OreHider v1.4:** Professional-grade Anti-Xray management that enforces Paper world configurations, calculates dimension-aware mining ratios, and uses heuristic analysis to detect advanced X-Ray users.
 
 ## 🛠️ Included Checks
-AegisGuard spans **34 individual enterprise-grade checks** encompassing multiple dimensions of play.
+AegisGuard spans **34+ individual enterprise-grade checks** encompassing multiple dimensions of play.
 
 - **Combat:** _Reach, KillAura, AutoClicker, Velocity, Critical, AimAssist_
 - **Movement:** _Fly, Speed, NoFall, Phase, Jesus, Step, Blink, InventoryWalk_
 - **World:** _Scaffold, Nuker, AutoMine_
-- **Ore (Xray):** _Xray (Dynamic thresholds), OreTracker (Hidden/Exposed validation)_
+- **Ore (Xray & OreHider):** _Xray (Dynamic thresholds), OreTracker, RatioAnalysis, HeuristicThresholds_
 - **Interaction:** _ChestStealer, AutoArmor, AutoTotem, AutoEat_
 - **Packet & Exploits:** _InvalidPacket, PacketOrder, PacketFlood, CrashExploit, BookExploit, SignExploit, ChatFlood_
 - **Economy:** _EconomyAbuse (Trade mapping and inflation protection)_
@@ -39,8 +40,9 @@ AegisGuard spans **34 individual enterprise-grade checks** encompassing multiple
 - `/ac exempt <player> <time>` - Force bypass checks temporarily for a player.
 - `/ac evidence <player>` - Fetch raw data logs associated with flagged interactions.
 - `/ac webhook <test|status|flush|reload>` - Manage webhook queues.
+- `/oh` (Aliases: `/orehider`, `/hide`) - **OreHider Management**: Open Control Panel, sync Paper configs, or reload settings.
 
-*(Permission `aegis.staff` required for most staff-level interactions, `aegis.gui` for dashboard).*
+*(Permission `aegis.staff` required for most staff-level interactions, `aegis.gui` for dashboard, `orehider.admin` for OreHider commands).*
 
 ## 🔌 Configuration & Datasets
 The configuration is broken down into structured systems, located in `plugins/AegisGuard/`:
